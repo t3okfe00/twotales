@@ -9,6 +9,7 @@ const initialFormState: StoryFormState = {
   success: "",
   story: "",
   totalTokens: 0,
+  error: "",
 };
 
 export default function StoryGenerationForm() {
@@ -22,7 +23,11 @@ export default function StoryGenerationForm() {
       <div className="flex gap-4 mb-4">
         <div className="flex-1">
           <label className="block mb-1">Language</label>
-          <select name="language" className="border p-2 rounded w-full">
+          <select
+            name="language"
+            className="border p-2 rounded w-full"
+            defaultValue={languages[0]}
+          >
             {languages.map((lang) => (
               <option key={lang} value={lang}>
                 {lang}
@@ -32,7 +37,11 @@ export default function StoryGenerationForm() {
         </div>
         <div className="flex-1">
           <label className="block mb-1">Vocabulary level</label>
-          <select name="languageLevel" className="border p-2 rounded w-full">
+          <select
+            name="languageLevel"
+            className="border p-2 rounded w-full"
+            defaultValue={languageLevels[0]}
+          >
             {languageLevels.map((level) => (
               <option key={level} value={level}>
                 {level.charAt(0).toUpperCase() + level.slice(1)}
@@ -47,6 +56,7 @@ export default function StoryGenerationForm() {
         name="prompt"
         placeholder="Prompt"
         className="mb-4 border p-2 rounded"
+        defaultValue=""
       />
       <Submit />
 

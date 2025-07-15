@@ -42,3 +42,6 @@ export function generateOpenAIStoryPrompt(
 
           Please ensure that both stories match sentence-for-sentence precisely.`;
 }
+
+export const openAIStoryGenerationInstructions = `You are a creative and professional story writer.`;
+export const openAIStoryGenerationModel = "gpt-4.1";
