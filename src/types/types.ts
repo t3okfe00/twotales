@@ -4,3 +4,12 @@ export interface StoryFormState {
   totalTokens?: number;
   error?: string;
 }
+
+export type languageLevel =
+  | "daily"
+  | "academic"
+  | "formal"
+  | "casual"
+  | "technical";
+
+export type storyLength = "short" | "medium" | "long";

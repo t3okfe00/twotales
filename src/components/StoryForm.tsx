@@ -1,7 +1,7 @@
 "use client";
 import { generateStory } from "@/app/actions/stories/createStory";
 import { useActionState } from "react";
-import { LANGUAGES } from "@/constants";
+import { languages, languageLevels } from "@/constants";
 import { Submit } from "./Submit";
 import { StoryFormState } from "@/types/types";
 
@@ -19,14 +19,28 @@ export default function StoryGenerationForm() {
       action={formAction}
       className="p-8 flex flex-col border rounded-lg bg-gray-200 shadow-lg w-full max-w-lg"
     >
-      <label>Language</label>
-      <select name="language" className="mb-4 border p-2 rounded">
-        {LANGUAGES.map((lang) => (
-          <option key={lang} value={lang}>
-            {lang}
-          </option>
-        ))}
-      </select>
+      <div className="flex gap-4 mb-4">
+        <div className="flex-1">
+          <label className="block mb-1">Language</label>
+          <select name="language" className="border p-2 rounded w-full">
+            {languages.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex-1">
+          <label className="block mb-1">Vocabulary level</label>
+          <select name="languageLevel" className="border p-2 rounded w-full">
+            {languageLevels.map((level) => (
+              <option key={level} value={level}>
+                {level.charAt(0).toUpperCase() + level.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
       <label>Description</label>
       <input
         type="text"
