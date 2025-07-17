@@ -60,7 +60,13 @@ export default function StoryGenerationForm() {
         className="mb-4 border p-2 rounded"
         defaultValue=""
       />
-      <SubmitButton />
+      <SubmitButton
+        label="Generate Story"
+        pendingLabel="Generating..."
+        className=""
+      >
+        Generate Story
+      </SubmitButton>
 
       {state.success === "true" && (
         <div className="mt-4 p-4 bg-green-100 border border-green-300 rounded">

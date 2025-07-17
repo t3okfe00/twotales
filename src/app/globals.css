@@ -1,8 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Minimalist 3-Color Palette: Soft Blue, Soft Green, Soft Yellow */
+  --background: #fefefe;
+  --foreground: #374151;
+
+  /* Soft Blue (Primary) */
+  --primary-50: #f0f7ff;
+  --primary-100: #e0f0ff;
+  --primary-200: #c7e2ff;
+  --primary-300: #a3d0ff;
+  --primary-400: #7db8ff;
+  --primary-500: #5b9fff;
+  --primary-600: #4285f4;
+
+  /* Soft Green (Secondary) */
+  --secondary-50: #f0fdf5;
+  --secondary-100: #e0fce8;
+  --secondary-200: #c7f7d1;
+  --secondary-300: #a3efb8;
+  --secondary-400: #7de39f;
+  --secondary-500: #5cd687;
+  --secondary-600: #4ade80;
+
+  /* Soft Yellow (Accent) */
+  --accent-50: #fffef0;
+  --accent-100: #fffce0;
+  --accent-200: #fff8c7;
+  --accent-300: #fff2a3;
+  --accent-400: #ffeb7d;
+  --accent-500: #ffe45c;
+  --accent-600: #ffd700;
+
+  /* Clean Neutrals */
+  --neutral-50: #fafafa;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a3a3a3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
 }
 
 @theme inline {
@@ -14,13 +54,57 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #1a1a1a;
+    --foreground: #e5e5e5;
   }
 }
 
 body {
-  background: var(--foreground);
-  color: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--neutral-50);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  color: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--color-white);
+  }
+}
+
+/* Minimal scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neutral-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-300);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-400);
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.2s ease;
+}
+
+/* Clean selection */
+::selection {
+  background: var(--primary-100);
+  color: var(--neutral-800);
+}
+
+@media (prefers-color-scheme: dark) {
+  ::selection {
+    background: var(--primary-600);
+    color: var(--neutral-100);
+  }
 }

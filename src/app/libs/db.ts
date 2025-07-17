@@ -2,6 +2,7 @@
 import { CreateStoryInput, UserCreateInput } from "@/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { createClient as adminClient } from "@/utils/supabase/admin";
+import { redirect } from "next/navigation";
 
 export async function createStory(storyData: CreateStoryInput) {
   const supabase = await createClient();
@@ -53,4 +54,13 @@ export async function createNewUser(userCreateInput: UserCreateInput) {
   }
 
   return data;
+}
+
+export async function logOutUser() {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw new Error(error.message);
+  }
+  redirect("/login");
 }
