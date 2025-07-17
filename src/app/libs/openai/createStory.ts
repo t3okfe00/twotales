@@ -3,10 +3,12 @@ import { openAiClient } from "@/utils/openai";
 import { languageLevel, StoryFormState } from "@/types/types";
 import { APIError } from "openai";
 import {
-  generateOpenAIStoryPrompt,
   openAIStoryGenerationInstructions,
   openAIStoryGenerationModel,
 } from "@/constants";
+import { extractStories, generateOpenAIStoryPrompt } from "@/utils/utils";
+import { CreateStoryInput } from "@/types/types";
+import { createStory } from "@/app/libs/db";
 
 export async function generateStory(
   prevState: StoryFormState,
@@ -32,7 +34,29 @@ export async function generateStory(
 
     const totalTokens = response.usage?.total_tokens;
     const story = response.output_text;
-    return { success: "true", story, totalTokens, error: "" };
+    const generatedStories = extractStories(story);
+
+    const storyCreateData: CreateStoryInput = {
+      english_version: generatedStories.english,
+      translated_version: generatedStories.translated,
+      translateTo: language,
+      level,
+      length,
+      total_tokens: totalTokens,
+    };
+    try {
+      await createStory(storyCreateData);
+    } catch (error) {
+      console.error("Error saving story to database:", error);
+      return {
+        success: "false",
+        error: "Failed to save story to the database.",
+        generatedStories: { english: "", translated: "" },
+        totalTokens: 0,
+      };
+    }
+
+    return { success: "true", generatedStories, totalTokens, error: "" };
   } catch (error: unknown) {
     let errorMessage = "";
     if (
@@ -47,7 +71,7 @@ export async function generateStory(
     return {
       success: "false",
       error: errorMessage,
-      story: "",
+      generatedStories: { english: "", translated: "" },
       totalTokens: 0,
     };
   }

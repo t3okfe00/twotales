@@ -1,28 +1,30 @@
 "use client";
-import { generateStory } from "@/app/actions/stories/createStory";
+import { generateStory } from "@/app/libs/openai/createStory";
 import { useActionState } from "react";
 import { languages, languageLevels } from "@/constants";
-import { Submit } from "./Submit";
+import { SubmitButton } from "./SubmitButton";
 import { StoryFormState } from "@/types/types";
+import { getTranslatedStory } from "@/utils/utils";
 
 const initialFormState: StoryFormState = {
   success: "",
-  story: "",
+  generatedStories: {},
   totalTokens: 0,
   error: "",
 };
 
 export default function StoryGenerationForm() {
   const [state, formAction] = useActionState(generateStory, initialFormState);
+  const translatedStory = getTranslatedStory(state.generatedStories);
 
   return (
     <form
       action={formAction}
-      className="p-8 flex flex-col border rounded-lg bg-gray-200 shadow-lg w-full max-w-lg"
+      className="p-4 flex flex-col border rounded-lg bg-gray-200 shadow-lg w-full max-w-lg"
     >
       <div className="flex gap-4 mb-4">
         <div className="flex-1">
-          <label className="block mb-1">Language</label>
+          <label className="block mb-1 text-sm">Language</label>
           <select
             name="language"
             className="border p-2 rounded w-full"
@@ -36,7 +38,7 @@ export default function StoryGenerationForm() {
           </select>
         </div>
         <div className="flex-1">
-          <label className="block mb-1">Vocabulary level</label>
+          <label className="block mb-1 text-sm">Vocabulary level</label>
           <select
             name="languageLevel"
             className="border p-2 rounded w-full"
@@ -58,12 +60,15 @@ export default function StoryGenerationForm() {
         className="mb-4 border p-2 rounded"
         defaultValue=""
       />
-      <Submit />
+      <SubmitButton />
 
       {state.success === "true" && (
         <div className="mt-4 p-4 bg-green-100 border border-green-300 rounded">
           <h2 className="text-lg font-bold">Generated Story</h2>
-          <p className="mt-2">{state.story}</p>
+
+          <p className="mt-2">{state.generatedStories?.english}</p>
+          {translatedStory}
+
           <p className="mt-2 text-sm text-gray-600">
             Tokens used: {state.totalTokens}
           </p>

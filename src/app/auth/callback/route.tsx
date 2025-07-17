@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 // The client you created from the Server-Side Auth instructions
-import { createClient } from "@/utils/supabase/admin";
+import { createClient } from "@/utils/supabase/server";
+import { createNewUser, isExistingUser } from "@/app/libs/db";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -16,6 +17,42 @@ export async function GET(request: Request) {
     const { error } = await (
       await createClient()
     ).auth.exchangeCodeForSession(code);
+
+    console.log("Code exchanged for session:", code, error);
+    // Fetch the user that logged-in
+    const {
+      data: { user },
+      error: userError,
+    } = await (await createClient()).auth.getUser();
+    if (!user || userError) {
+      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    }
+
+    // Check if user exists in our custom users table
+    try {
+      const data = await isExistingUser(user.id);
+
+      if (!user.email) {
+        throw new Error("No email found, can not proceed");
+      }
+      if (!data) {
+        // User does not exist in our custom users table,Create a new user entry
+        await createNewUser({
+          userId: user.id,
+          email: user.email,
+          role: "user",
+          daily_tts_limit: 100,
+          daily_story_limit: 10,
+          membership_type: "basic",
+        });
+      } else {
+        return NextResponse.redirect(`${origin}${next}`);
+      }
+    } catch (error) {
+      console.log("Error checking user existence:", error);
+      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    }
+
     if (!error) {
       console.log("Code exchanged for session successfully");
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
