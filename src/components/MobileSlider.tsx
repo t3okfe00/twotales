@@ -1,27 +1,14 @@
+// MobileSidebar.tsx (Client Component)
+"use client";
+
 import Link from "next/link";
-
-import { createClient } from "@/utils/supabase/server";
 import { navigationItems } from "@/constants";
-import UserIcon from "./UserIcon";
 
-export default async function Sidebar() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await (await supabase).auth.getUser();
-
-  if (!user) {
-    console.log("User -,", user);
-    return null; // or redirect to login page
-  }
-
-  console.log("server ? Sidebar rendered");
+export default function MobileSidebar({ onClose }: { onClose: () => void }) {
+  console.log("client ? MobileSidebar rendered");
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 hidden lg:flex flex-col justify-between p-6 z-40 bg-[var(--primary-600)] border-r border-[var(--primary-200)] rounded-r-3xl shadow-lg">
-      {/* Logo */}
-
-      <nav className="flex flex-col gap-3">
-        {/* Navigation */}
+    <div className="fixed top-0 left-0 h-full w-64 bg-[var(--primary-600)] p-6 z-50 rounded-r-3xl shadow-lg">
+      <nav className="flex flex-col gap-3 mt-10">
         <div className="flex items-center gap-3 mb-10">
           <div className="w-10 h-10 rounded-xl bg-[var(--primary-200)] text-[var(--primary-800)] flex items-center justify-center font-bold text-xl shadow">
             ✨
@@ -33,6 +20,7 @@ export default async function Sidebar() {
             key={item.name}
             href={item.href}
             className="group flex items-center gap-4 px-4 py-3 rounded-xl bg-white hover:bg-[var(--primary-100)] transition duration-150 shadow-sm"
+            onClick={onClose}
           >
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-semibold"
@@ -46,8 +34,6 @@ export default async function Sidebar() {
           </Link>
         ))}
       </nav>
-      {/* User Info */}
-      <UserIcon email={user.email || "User"} />
-    </aside>
+    </div>
   );
 }
