@@ -92,3 +92,20 @@ export async function getUserStories() {
 
   return data;
 }
+
+export async function getStoryById(storyId: string) {
+  console.log("Fetching story with ID from database:", storyId);
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("stories")
+    .select("*")
+    .eq("id", storyId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching story:", error.message);
+    return null;
+  }
+
+  return data;
+}
