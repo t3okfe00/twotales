@@ -11,8 +11,8 @@ const DynamicStoryGenerationForm = dynamic(
 
 export default function CreateStoryPage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <h1>Create your story</h1>
+    <div className="w-full md:w-2/3 lg:w-1/2 min-h-screen py-16 px-4 border-2 border-gray-300 rounded-lg">
+      <h1 className="text-2xl font-bold mb-4 text-center">Create your story</h1>
       <DynamicStoryGenerationForm />
     </div>
   );

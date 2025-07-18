@@ -15,7 +15,7 @@ export default async function Sidebar() {
 
   console.log("server ? Sidebar rendered");
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 hidden lg:flex flex-col justify-between p-6 z-40 bg-[var(--primary-600)] border-r border-[var(--primary-200)] rounded-r-3xl shadow-lg">
+    <aside className="h-screen sm:w-20 md:w-48 w-64 hidden lg:flex flex-col justify-between p-6 z-40 bg-[var(--primary-600)] border-r border-[var(--primary-200)] rounded-r-3xl shadow-lg">
       {/* Logo */}
 
       <nav className="flex flex-col gap-3">

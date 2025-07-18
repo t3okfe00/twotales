@@ -1,26 +1,20 @@
-import { createClient } from "@/utils/supabase/client";
+import { getUserStories } from "../libs/db";
+import StoryCard from "@/app/my-stories/StoryCard";
+import { Story } from "@/types/types";
 
 export default async function MyStoriesPage() {
-  const client = createClient();
-
-  try {
-    const { data: story, error } = await client.from("stories").select();
-    if (!story) {
-      console.log("Errro", error);
-    }
-
-    console.log("Fetched story:", story);
-  } catch (error) {
-    console.error("Error fetching stories:", error);
-  }
-
+  const stories: Story[] = await getUserStories();
+  console.log("User stories:", stories);
   return (
-    <div
-      className="grid grid-rows-[20px_1fr_20px)
-            items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
-    >
-      <h1>My Stories</h1>
-      <p className="text-gray-500"></p>
+    <div className="h-screen flex flex-col">
+      <h1 className="flex-1 overflow-y-auto sm:px-20 lg:px-0 lg:pb-4">
+        My Stories
+      </h1>
+      {stories.length > 0 ? (
+        stories.map((story) => <StoryCard key={story.id} story={story} />)
+      ) : (
+        <p>No stories found.</p>
+      )}
     </div>
   );
 }

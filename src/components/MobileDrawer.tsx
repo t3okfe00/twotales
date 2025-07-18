@@ -30,7 +30,7 @@ export default function MobileDrawer() {
           />
 
           {/* Drawer panel */}
-          <div className="absolute top-0 left-0 h-full w-64 bg-[var(--primary-600)] p-6 rounded-r-3xl shadow-lg z-50">
+          <div className="absolute top-0 left-0 h-full lg:w-64 lg:bg-[var(--primary-600)] p-6 rounded-r-3xl shadow-lg z-50">
             {/* Close button */}
             <button
               onClick={() => setIsOpen(false)}

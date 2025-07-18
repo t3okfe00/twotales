@@ -4,7 +4,6 @@ import { useActionState } from "react";
 import { languages, languageLevels } from "@/constants";
 import { SubmitButton } from "./SubmitButton";
 import { StoryFormState } from "@/types/types";
-import { getTranslatedStory } from "@/utils/utils";
 
 const initialFormState: StoryFormState = {
   success: "",
@@ -15,14 +14,13 @@ const initialFormState: StoryFormState = {
 
 export default function StoryGenerationForm() {
   const [state, formAction] = useActionState(generateStory, initialFormState);
-  const translatedStory = getTranslatedStory(state.generatedStories);
 
   return (
     <form
       action={formAction}
-      className="p-4 flex flex-col border rounded-lg bg-gray-200 shadow-lg w-full max-w-lg"
+      className="p-4 flex flex-col rounded-lg **:shadow-lg w-full"
     >
-      <div className="flex gap-4 mb-4">
+      <div className="flex gap-4">
         <div className="flex-1">
           <label className="block mb-1 text-sm">Language</label>
           <select
@@ -60,26 +58,10 @@ export default function StoryGenerationForm() {
         className="mb-4 border p-2 rounded"
         defaultValue=""
       />
-      <SubmitButton
-        label="Generate Story"
-        pendingLabel="Generating..."
-        className=""
-      >
+      <SubmitButton pendingLabel="Generating..." className="">
         Generate Story
       </SubmitButton>
 
-      {state.success === "true" && (
-        <div className="mt-4 p-4 bg-green-100 border border-green-300 rounded">
-          <h2 className="text-lg font-bold">Generated Story</h2>
-
-          <p className="mt-2">{state.generatedStories?.english}</p>
-          {translatedStory}
-
-          <p className="mt-2 text-sm text-gray-600">
-            Tokens used: {state.totalTokens}
-          </p>
-        </div>
-      )}
       {state.success === "false" && <p>{state.error}</p>}
     </form>
   );
