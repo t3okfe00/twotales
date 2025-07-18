@@ -5,20 +5,27 @@ import { createClient as adminClient } from "@/utils/supabase/admin";
 import { redirect } from "next/navigation";
 
 export async function createStory(storyData: CreateStoryInput) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
+  const {
+    data: { user },
+  } = await (await createClient()).auth.getUser();
+
+  const finalObject = { ...storyData, user_id: user?.id };
+  console.log("Creating story in Database", finalObject);
+
+  const { data, error } = await (await createClient())
     .from("stories")
-    .insert(storyData)
+    .insert(finalObject)
     .select("*");
   if (!data || error) {
     throw new Error(error.message);
   }
+
+  return data;
 }
 
 export async function isExistingUser(userId: string) {
-  console.log("user id -->", userId);
   const supabase = await createClient();
-  console.log("Checking if user exists in Database");
+
   const { data, error } = await supabase
     .from("users")
     .select("*")
@@ -33,7 +40,7 @@ export async function isExistingUser(userId: string) {
 
 export async function createNewUser(userCreateInput: UserCreateInput) {
   const supabase = adminClient();
-  console.log("Creating new user in Database");
+
   const { data, error } = await supabase
     .from("users")
     .insert([

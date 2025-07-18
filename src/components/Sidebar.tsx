@@ -5,14 +5,12 @@ import { navigationItems } from "@/constants";
 import UserIcon from "./UserIcon";
 
 export default async function Sidebar() {
-  const supabase = createClient();
   const {
     data: { user },
-  } = await (await supabase).auth.getUser();
+  } = await (await createClient()).auth.getUser();
 
   if (!user) {
-    console.log("User -,", user);
-    return null; // or redirect to login page
+    return;
   }
 
   console.log("server ? Sidebar rendered");
