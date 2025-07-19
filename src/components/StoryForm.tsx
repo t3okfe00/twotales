@@ -1,5 +1,5 @@
 "use client";
-import { generateStory } from "@/app/libs/openai/createStory";
+import { generateStory } from "@/app/libs/openai/actions";
 import { useActionState } from "react";
 import { languages, languageLevels } from "@/constants";
 import { SubmitButton } from "./SubmitButton";
@@ -62,7 +62,7 @@ export default function StoryGenerationForm() {
         Generate Story
       </SubmitButton>
 
-      {state.success === "false" && <p>{state.error}</p>}
+      {state.success && state.success === "false" && <p>{state.error}</p>}
     </form>
   );
 }

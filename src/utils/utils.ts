@@ -6,7 +6,7 @@ export function generateOpenAIStoryPrompt(
   length: storyLength
 ): string {
   const numberOfSentences =
-    length === "short" ? 30 : length === "medium" ? 60 : 80;
+    length === "short" ? 10 : length === "medium" ? 20 : 40;
 
   return `${prompt} +
           I want to hear the same story in English and ${language} using ${level} vocabulary. 

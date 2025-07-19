@@ -13,18 +13,14 @@ export default async function Sidebar() {
     return;
   }
 
-  console.log("server ? Sidebar rendered");
   return (
-    <aside className="h-screen sm:w-20 md:w-48 w-64 hidden lg:flex flex-col justify-between p-6 z-40 bg-[var(--primary-600)] border-r border-[var(--primary-200)] rounded-r-3xl shadow-lg">
+    <aside className="hidden md:flex h-screen w-48 lg:w-64 flex-col justify-between p-6 z-50 rounded-r-3xl shadow-lg border-2 border-black">
       {/* Logo */}
-
-      <nav className="flex flex-col gap-3">
+      <nav>
         {/* Navigation */}
-        <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 rounded-xl bg-[var(--primary-200)] text-[var(--primary-800)] flex items-center justify-center font-bold text-xl shadow">
-            ✨
-          </div>
-          <h1 className="text-2xl font-extrabold text-white">TwoTales</h1>
+        <div className="flex items-center gap-3 p-4 mb-6 text-4xl">
+          <div>✨</div>
+          <h1>TwoTales</h1>
         </div>
         {navigationItems.map((item) => (
           <Link

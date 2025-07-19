@@ -1,6 +1,6 @@
 "use server";
 import { openAiClient } from "@/utils/openai";
-import { languageLevel, StoryFormState } from "@/types/types";
+import { languageLevel, Story, StoryFormState } from "@/types/types";
 import { APIError } from "openai";
 import {
   openAIStoryGenerationInstructions,
@@ -8,7 +8,9 @@ import {
 } from "@/constants";
 import { extractStories, generateOpenAIStoryPrompt } from "@/utils/utils";
 import { CreateStoryInput } from "@/types/types";
-import { createStory } from "@/app/libs/db";
+import { createQuizWithQuestions, createStory } from "@/app/libs/db";
+import { quizSchema } from "./schemas/quizSchema";
+import { zodTextFormat } from "openai/helpers/zod.mjs";
 
 export async function generateStory(
   prevState: StoryFormState,
@@ -77,4 +79,60 @@ export async function generateStory(
   }
 
   //revalidatePath("/my-stories");
+}
+
+export async function generateQuizFromStory(story: Story) {
+  try {
+    const response = await openAiClient.responses.parse({
+      model: "gpt-4o-2024-08-06",
+      input: [
+        {
+          role: "system",
+          content:
+            "You are a quiz generator. Generate a quiz with exactly 5 questions based on the provided story. Each question should have a clear answer.",
+        },
+        {
+          role: "user",
+          content: story.translated_version,
+        },
+      ],
+      text: {
+        format: zodTextFormat(quizSchema, "quiz_questions_generator"),
+      },
+    });
+
+    console.log("Quiz generation response:", response.output_parsed);
+
+    if (response.output_parsed) {
+      const quizReturn = {
+        story_id: story.id,
+        id: response.id,
+        totalTokens: response.usage?.total_tokens || 0,
+        questions: response.output_parsed,
+      };
+
+      const saveToDatabase = await createQuizWithQuestions(
+        quizReturn.story_id,
+        quizReturn.questions.questions,
+        quizReturn.totalTokens
+      );
+
+      console.log("Quiz saved to database:", saveToDatabase);
+      if (!saveToDatabase) {
+        console.log("Failed to save quiz to the database.");
+        return {
+          success: false,
+          error: "Failed to save quiz to the database.",
+          quiz: null,
+        };
+      }
+    }
+  } catch (error) {
+    console.error("Error generating quiz:", error);
+    return {
+      success: false,
+      error: "Failed to generate quiz. Please try again later.",
+      quiz: null,
+    };
+  }
 }

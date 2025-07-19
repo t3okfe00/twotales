@@ -32,9 +32,7 @@ export default function RootLayout({
         <div className="flex">
           <Sidebar />
           <MobileDrawer />
-          <div className="flex-1 flex items-center justify-center min-h-screen">
-            {children}
-          </div>
+          <div className="flex-1">{children}</div>
         </div>
       </body>
     </html>

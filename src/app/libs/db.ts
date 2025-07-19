@@ -109,3 +109,28 @@ export async function getStoryById(storyId: string) {
 
   return data;
 }
+
+export async function createQuizWithQuestions(
+  storyId: string,
+  questions: { question: string; answer: string }[],
+  totalTokens: number = 0
+) {
+  console.log("createQuizWithQuestions function called");
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await (await createClient()).auth.getUser();
+  const { data, error } = await supabase.rpc("create_quiz_with_questions", {
+    input_story_id: storyId,
+    input_user_id: user?.id,
+    input_total_tokens: totalTokens,
+    input_questions: questions,
+  });
+
+  if (error) {
+    console.error("Error creating quiz:", error.message);
+    return null;
+  }
+
+  return data;
+}
