@@ -1,5 +1,9 @@
 "use server";
-import { CreateStoryInput, UserCreateInput } from "@/types/types";
+import {
+  CreateStoryInput,
+  StoriesWithQuizzes,
+  UserCreateInput,
+} from "@/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { createClient as adminClient } from "@/utils/supabase/admin";
 import { redirect } from "next/navigation";
@@ -131,6 +135,40 @@ export async function createQuizWithQuestions(
     console.error("Error creating quiz:", error.message);
     return null;
   }
+
+  return data;
+}
+
+export async function getUserStoriesWithQuizAndQuestions(): Promise<
+  StoriesWithQuizzes[]
+> {
+  console.log("Fetching user stories with quizzes and questions");
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data, error } = await supabase
+    .from("stories")
+    .select(
+      `id,
+    english_version,
+    translated_version,
+    level,
+    length,
+    translateTo,
+    quizzes (
+      id,
+      quiz_questions (
+        id,
+        question,
+        answer
+      )
+    )
+  `
+    )
+    .eq("user_id", user?.id);
+
+  if (error) throw error;
 
   return data;
 }

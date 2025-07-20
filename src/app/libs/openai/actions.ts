@@ -120,19 +120,11 @@ export async function generateQuizFromStory(story: Story) {
       console.log("Quiz saved to database:", saveToDatabase);
       if (!saveToDatabase) {
         console.log("Failed to save quiz to the database.");
-        return {
-          success: false,
-          error: "Failed to save quiz to the database.",
-          quiz: null,
-        };
+        throw new Error("Failed to save quiz to the database.");
       }
     }
   } catch (error) {
     console.error("Error generating quiz:", error);
-    return {
-      success: false,
-      error: "Failed to generate quiz. Please try again later.",
-      quiz: null,
-    };
+    throw new Error("Failed to generate quiz. Please try again later.");
   }
 }

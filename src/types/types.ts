@@ -37,3 +37,24 @@ export type languageLevel =
   | "technical";
 
 export type storyLength = "short" | "medium" | "long";
+
+export interface QuizQuestions {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface Quiz {
+  id: string;
+  quiz_questions: QuizQuestions[];
+}
+
+export interface StoryWithQuizzes {
+  id: string;
+  english_version: string;
+  translated_version: string;
+  level: languageLevel;
+  length: storyLength;
+  translateTo: string;
+  quizzes?: Quiz[];
+}
