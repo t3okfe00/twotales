@@ -1,9 +1,9 @@
-import { StoryWithQuizzes } from "@/types/types";
+import { StoryWithQuizMeta } from "@/types/types";
 import StoryCard from "@/app/my-stories/StoryCard";
 export default function StoriesList({
   stories,
 }: {
-  stories: StoryWithQuizzes[];
+  stories: StoryWithQuizMeta[];
 }) {
   return (
     <div className="flex flex-col gap-4 p-4">

@@ -1,9 +1,5 @@
 "use server";
-import {
-  CreateStoryInput,
-  StoriesWithQuizzes,
-  UserCreateInput,
-} from "@/types/types";
+import { CreateStoryInput, UserCreateInput } from "@/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { createClient as adminClient } from "@/utils/supabase/admin";
 import { redirect } from "next/navigation";
@@ -139,36 +135,47 @@ export async function createQuizWithQuestions(
   return data;
 }
 
-export async function getUserStoriesWithQuizAndQuestions(): Promise<
-  StoriesWithQuizzes[]
-> {
-  console.log("Fetching user stories with quizzes and questions");
+export async function getUserStoriesWithQuizMeta() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   const { data, error } = await supabase
     .from("stories")
     .select(
-      `id,
-    english_version,
-    translated_version,
-    level,
-    length,
-    translateTo,
-    quizzes (
+      `
       id,
-      quiz_questions (
-        id,
-        question,
-        answer
+      english_version,
+      translated_version,
+      level,
+      length,
+      translateTo,
+      quizzes (
+        id
       )
-    )
-  `
+    `
     )
     .eq("user_id", user?.id);
 
   if (error) throw error;
 
   return data;
+}
+
+export async function getQuizQuestionsById(quizId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("quizzes")
+    .select("quiz_questions (id, question, answer)")
+    .eq("id", quizId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching quiz questions:", error.message);
+    return null;
+  }
+
+  return data?.quiz_questions || [];
 }

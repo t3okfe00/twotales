@@ -48,7 +48,19 @@ export interface Quiz {
   id: string;
   quiz_questions: QuizQuestions[];
 }
-
+export interface StoryWithQuizMeta {
+  id: string;
+  english_version: string;
+  translated_version: string;
+  level: string;
+  length: number;
+  translateTo: string;
+  quizzes:
+    | {
+        id: string;
+      }[]
+    | null;
+}
 export interface StoryWithQuizzes {
   id: string;
   english_version: string;
