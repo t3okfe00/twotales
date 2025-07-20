@@ -1,15 +1,23 @@
 "use server";
 import { openAiClient } from "@/utils/openai";
-import { languageLevel, Story, StoryFormState } from "@/types/types";
+import {
+  languageLevel,
+  Story,
+  StoryFormState,
+  CreateStoryInput,
+  StoryWithQuizMeta,
+} from "@/types/types";
 import { APIError } from "openai";
 import {
   openAIStoryGenerationInstructions,
   openAIStoryGenerationModel,
+  openAIQuizGenerationModel,
 } from "@/constants";
-import { extractStories, generateOpenAIStoryPrompt } from "@/utils/utils";
-import { CreateStoryInput } from "@/types/types";
+import { generateOpenAIStoryPrompt } from "@/utils/utils";
+
 import { createQuizWithQuestions, createStory } from "@/app/libs/db";
 import { quizSchema } from "./schemas/quizSchema";
+import { storySchema } from "./schemas/storySchema";
 import { zodTextFormat } from "openai/helpers/zod.mjs";
 
 export async function generateStory(
@@ -32,22 +40,40 @@ export async function generateStory(
       model: openAIStoryGenerationModel,
       instructions: openAIStoryGenerationInstructions,
       input: storyPrompt,
+      text: {
+        format: zodTextFormat(storySchema, "story_generator"),
+      },
     });
 
     const totalTokens = response.usage?.total_tokens;
     const story = response.output_text;
-    const generatedStories = extractStories(story);
+    const parsed = JSON.parse(story);
 
+    const generatedStories = {
+      english: parsed.english_version,
+      translated: parsed.translated_version,
+    };
     const storyCreateData: CreateStoryInput = {
-      english_version: generatedStories.english,
-      translated_version: generatedStories.translated,
+      english_version: parsed.english_version,
+      translated_version: parsed.translated_version,
       translateTo: language,
       level,
       length,
       total_tokens: totalTokens,
     };
     try {
-      await createStory(storyCreateData);
+      const storyArray = await createStory(storyCreateData);
+      const story: Story = Array.isArray(storyArray)
+        ? storyArray[0]
+        : storyArray;
+
+      return {
+        success: "true",
+        generatedStories,
+        totalTokens,
+        error: "",
+        path: `/my-stories/${story.id}`,
+      };
     } catch (error) {
       console.error("Error saving story to database:", error);
       return {
@@ -57,8 +83,6 @@ export async function generateStory(
         totalTokens: 0,
       };
     }
-
-    return { success: "true", generatedStories, totalTokens, error: "" };
   } catch (error: unknown) {
     let errorMessage = "";
     if (
@@ -77,14 +101,12 @@ export async function generateStory(
       totalTokens: 0,
     };
   }
-
-  //revalidatePath("/my-stories");
 }
 
-export async function generateQuizFromStory(story: Story) {
+export async function generateQuizFromStory(story: StoryWithQuizMeta) {
   try {
     const response = await openAiClient.responses.parse({
-      model: "gpt-4o-2024-08-06",
+      model: openAIQuizGenerationModel,
       input: [
         {
           role: "system",
@@ -101,8 +123,6 @@ export async function generateQuizFromStory(story: Story) {
       },
     });
 
-    console.log("Quiz generation response:", response.output_parsed);
-
     if (response.output_parsed) {
       const quizReturn = {
         story_id: story.id,
@@ -110,18 +130,17 @@ export async function generateQuizFromStory(story: Story) {
         totalTokens: response.usage?.total_tokens || 0,
         questions: response.output_parsed,
       };
-
-      const saveToDatabase = await createQuizWithQuestions(
+      const quizId = await createQuizWithQuestions(
         quizReturn.story_id,
         quizReturn.questions.questions,
         quizReturn.totalTokens
       );
 
-      console.log("Quiz saved to database:", saveToDatabase);
-      if (!saveToDatabase) {
-        console.log("Failed to save quiz to the database.");
+      if (!quizId) {
         throw new Error("Failed to save quiz to the database.");
       }
+
+      return `/my-stories/${story.id}/quiz/${quizId}`;
     }
   } catch (error) {
     console.error("Error generating quiz:", error);

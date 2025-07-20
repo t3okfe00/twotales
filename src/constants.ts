@@ -19,7 +19,8 @@ export const languageLevels: languageLevel[] = [
 ];
 
 export const openAIStoryGenerationInstructions = `You are a creative and professional story writer.`;
-export const openAIStoryGenerationModel = "gpt-4.1";
+export const openAIStoryGenerationModel = "gpt-4o-mini-2024-07-18";
+export const openAIQuizGenerationModel = "gpt-4o-mini-2024-07-18";
 
 export const navigationItems = [
   { name: "Home", href: "/", icon: "🏠", color: "var(--primary-100)" },

@@ -8,8 +8,10 @@ export default function UserIcon({ email }: { email: string }) {
       <SubmitButton
         label="Log out"
         pendingLabel="Logging out..."
-        className="flex items-center gap-2"
-      ></SubmitButton>
+        className="flex items-center gap-2 border-2 border-white"
+      >
+        Log Out
+      </SubmitButton>
     </form>
   );
 }

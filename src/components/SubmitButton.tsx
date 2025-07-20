@@ -12,7 +12,7 @@ type SubmitButtonProps = {
 
 export const SubmitButton = ({
   children,
-  label,
+
   pendingLabel = "Processing...",
   color = "bg-gradient-to-r from-blue-500 to-green-500 text-white",
   className = "",
@@ -36,8 +36,8 @@ export const SubmitButton = ({
       `}
       style={style}
     >
-      {children}
-      <span>{pending ? pendingLabel : label}</span>
+      {!pending && children}
+      <span>{pending && pendingLabel}</span>
     </button>
   );
 };

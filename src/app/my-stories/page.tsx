@@ -6,11 +6,11 @@ export default async function MyStoriesPage() {
   //const stories: Story[] = await getUserStories();
   const storiesWithQuizIds: StoryWithQuizMeta[] =
     await getUserStoriesWithQuizMeta();
-  console.log("User stories:", storiesWithQuizIds);
+  console.log("page.tsx");
 
   return (
     <div>
-      <h1 className="text-2xl font-bold p-4 px-16">My Stories</h1>
+      <h1 className="text-2xl font-bold p-4 px-16 shadow-lg">My Stories</h1>
       {storiesWithQuizIds.length > 0 ? (
         <StoriesList stories={storiesWithQuizIds} />
       ) : (

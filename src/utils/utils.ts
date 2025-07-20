@@ -6,13 +6,11 @@ export function generateOpenAIStoryPrompt(
   length: storyLength
 ): string {
   const numberOfSentences =
-    length === "short" ? 10 : length === "medium" ? 20 : 40;
+    length === "short" ? 15 : length === "medium" ? 25 : 40;
 
   return `${prompt} +
           I want to hear the same story in English and ${language} using ${level} vocabulary. 
-          The format should be like this: 
-          English: [the whole story in English]. 
-          ${language}: [the whole story in ${language}].
+          
 
           First, give me the complete English story, then the same story in ${language}. Do not mix any content!
 

@@ -2,6 +2,12 @@ export interface Story {
   id: string;
   english_version: string;
   translated_version: string;
+  created_at: string;
+  level: languageLevel;
+  length: storyLength;
+  total_tokens?: number;
+  user_id?: string;
+  translateTo: string;
 }
 
 export interface CreateStoryInput {
@@ -27,6 +33,7 @@ export interface StoryFormState {
   generatedStories: Record<string, string>;
   totalTokens?: number;
   error: string;
+  path?: string;
 }
 
 export type languageLevel =
